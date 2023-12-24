@@ -62,7 +62,26 @@ struct Job* readInputFromFile(const char* fileName){
             fprintf(stderr, "we didnt allocate the memory allocation\n");
             exit(1);
         }
+
+        char line[50];
+        if (fgets(line, sizeof(line), inputFile) == NULL) {
+            break;
+        }
+
+        sscanf(line, "%d:%d:%d", &newJob->bursTime, &newJob->arrivalTime, &newJob->priority);
+        newJob->next = NULL;
+
+        if (!head) {
+            head = newJob;
+            tail = newJob;
+        } 
+        else {
+            tail->next = newJob;
+            tail = newJob;
+        }
     }
+ fclose(inputFile);
+ return head;
 }
 
 
