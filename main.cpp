@@ -36,6 +36,50 @@ int main (int argc, char *argv[]){
     struct Job* jobs= readInputFromFile(inputFile);
 
     // logic of the cpu scheduler(MENU PART)
+ while(true){
+    int selectionOption;
+    cout<<"CPU SCHEDULER SIMULATOR\n";
+    cout<<"1. Scheduling Method(none)\n";
+    cout<<"2. Preemptive Mode\n";
+    cout<<"3. Show Result\n";
+    cout<<"4. End Program\n";
+    cout<<"Option > ";
+
+    cin>> selectionOption;
+           
+        switch(selectionOption){
+            case 1:  
+            int SchedulingOption;
+            cout<<"4. Choose what you want to do: \n";
+            cout<<"1. None method\n";
+            cout<<"2. First come\n";
+            cout<<"3. Shortest Job First\n";
+            cout<<"4. Priority Scheduling\n";
+            cout<<"5. Round Robin\n";
+            
+            
+            cin>>SchedulingOption;
+            switch (SchedulingOption)
+            {
+            case 1: /* constant-expression */
+            break;
+            case 2: /* constant-expression */
+            break;
+            case 3: /* constant-expression */
+            break;
+            case 4: /* constant-expression */
+            break;
+            case 5: /* constant-expression */
+            break;
+            default:
+            cout<<"please make a good choice";
+            break;
+            }
+            break;
+            
+            
+        }
+ }
 
     // Free alocated memory for jobs
 
