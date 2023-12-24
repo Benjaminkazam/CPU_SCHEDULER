@@ -11,6 +11,7 @@ struct Job{
     int priority;
     struct Job* next;
 };
+struct Job* readInputFromFile(const char* fileName);
 
 int main (int argc, char *argv[]){
     //i wanna check if the correct command line is provide
@@ -38,7 +39,8 @@ int main (int argc, char *argv[]){
 
     // Free alocated memory for jobs
 
-    while(jobs !=NULL){
+     
+    while(jobs!=NULL){
         struct Job* temp = jobs;
         jobs = jobs->next;
         free(temp);
