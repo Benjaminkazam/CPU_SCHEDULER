@@ -202,7 +202,7 @@ void displayResults(const char* fileName)
      FILE* inputFile = fopen(fileName, "r");
     if (!inputFile) {
         fprintf(stderr, "Error opening file: %s\n", fileName);
-        exit(1);
+        return;
     }
 
     char line[256];
