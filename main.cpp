@@ -16,10 +16,13 @@ struct Job{
 struct Job* readInputFromFile(const char* fileName);
 
 //this function is implemented for First come, First served;
-void fcomeFserved();
-
+void fcomeFserved(struct Job* jobs, const char* fileName);
+//function to display average waiting time
+//void displayAverageWaitingTime(struct Job* jobs, char schedulingMethod);
+//function to display the scheduling results
+void displayResults(const char* fileName);
 int main (int argc, char *argv[]){
-    //i wanna check if the correct command line is provide
+    // i wanna check if the correct command line is provide
     if (argc!=5){
         fprintf(stderr, "You must use this format for running the code : %s -f input.txt -o output.txt\n", argv[0]);
         return 1;
@@ -43,9 +46,9 @@ int main (int argc, char *argv[]){
     // logic of the cpu scheduler(MENU PART)
  while(true){
     int selectionOption;
-    cout<<"CPU SCHEDULER SIMULATOR\n";
+    cout<<" CPU SCHEDULER SIMULATOR \n";
     cout<<"1. Scheduling Method(none)\n";
-    cout<<"2. Preemptive Mode\n";
+    cout<<"2. Premptive Mode\n";
     cout<<"3. Show Result\n";
     cout<<"4. End Program\n";
     cout<<"Choose Option > ";
@@ -56,25 +59,26 @@ int main (int argc, char *argv[]){
             case 1:  
             int SchedulingOption;
             cout<<" Choose what you want to do: \n";
-            cout<<"1. None method\n";
-            cout<<"2. First come,First Served\n";
-            cout<<"3. Shortest Job First\n";
+            cout<<"1. None method Scheduling\n";
+            cout<<"2. First come,First Served Schedulin\n";
+            cout<<"3. Shortest Job First Scheduling\n";
             cout<<"4. Priority Scheduling\n";
-            cout<<"5. Round Robin\n";
+            cout<<"5. Round Robin Scheduling\n";
+            cout<<" Option >";
             
             cin>>SchedulingOption;
             
-                switch (SchedulingOption)
+            switch (SchedulingOption)
             {
-             case 1: /* constant-expression */
+             case 1: //first function
              break;
-             case 2: /* constant-expression */
+             case 2: fcomeFserved(jobs,outputFile);//Implement first come , first served function
              break;
-             case 3: /* constant-expression */
+             case 3: //third function
               break;
-             case 4: /* constant-expression */
+             case 4: //function
               break;
-             case 5: /* constant-expression */
+             case 5: //fifth function
              break;
              default:
                 cout<<"please make a good choice";
@@ -83,7 +87,7 @@ int main (int argc, char *argv[]){
             break;
             case 2: //Preemptive Mode
             break;
-            case 3: //Show Result
+            case 3: displayResults(outputFile);//Show Res
             break;
             case 4:cout<< "Exit the Program..\n\n";
             exit(1);
@@ -106,23 +110,23 @@ int main (int argc, char *argv[]){
 
 struct Job* readInputFromFile(const char* fileName){
     FILE* inputFile= fopen(fileName, "r");
-    if(!inputFile){
-        fprintf(stderr,"Error during opening file: %s\n", fileName);
-        exit(1);
-    }
     struct Job* head= NULL;
     struct Job* tail= NULL;
+    if(!inputFile){
+        fprintf(stderr,"Error during opening file: %s\n", fileName);
+        return head;
+    }
 
     while(!feof(inputFile)){
         struct Job* newJob = (struct Job*)malloc(sizeof(struct Job));
         if(!newJob){
             fprintf(stderr, "we didnt allocate the memory allocation\n");
-            exit(1);
+            return head;
         }
 
         char line[50];
         if (fgets(line, sizeof(line), inputFile) == NULL) {
-            break;
+            return head;
         }
 
         sscanf(line, "%d:%d:%d", &newJob->bursTime, &newJob->arrivalTime, &newJob->priority);
@@ -142,21 +146,32 @@ struct Job* readInputFromFile(const char* fileName){
 }
 // function to implement first come, first served
 
-void fcomeFserved(struct Job* jobs){
-    //initialize the time
+void fcomeFserved(struct Job* jobs, const char* fileName){
+    //Enter the ouptfile file
+    FILE*outputFile= fopen(fileName, "w");
+    if(!outputFile){
+        fprintf(stderr, "Error during opening output file: output.txt\n");
+        return;
+    }
+    //initialize variable for total waiting
     int totalWaiting=0;
     int currentT=0;
+    int i =0;
     //go through linked list
     struct Job* currentJob= jobs;
+    fprintf(outputFile, "SCheduling method: First come, First served");
+    fprintf(outputFile, "Process waiting time: \n");
     while (currentJob!=NULL){
-        int waitingT= currentT- currentJob->arrivalTime;
+        i++;
+        int waitingT= currentT- currentJob->arrivalTime;// calculate waiting time
         if (waitingT<0){
             waitingT=0;//just to be sure that waiting time is non negative
         }
 
-        totalWaiting += waitingT;
-        cout<<"P" <<currentJob->arrivalTime<<":" <<waitingT<< "ms\n";
-        
+        totalWaiting += waitingT;// update
+        //write proceess info in output file
+        fprintf(outputFile, "P%d: %d ms\n", i, waitingT);
+                
         currentT += currentJob->bursTime;
 
         currentJob=currentJob->next;
@@ -170,16 +185,30 @@ void fcomeFserved(struct Job* jobs){
     }
 
     if (nProcess>0){
-        float avgWT= totalWaiting/nProcess;
-        cout<<"Average waiting time is: "<<avgWT<<" ms\n";
+        float avgWT=(float) totalWaiting/nProcess;
+        fprintf(outputFile,"Average waiting Time: %.1f ms\n",avgWT);
     }
     else{
         cout<<"No process for calculation of average time";
     }
+    fclose(outputFile);
 
+}
+ 
 
+// Function to display the scheduling results
+void displayResults(const char* fileName)
+{
+     FILE* inputFile = fopen(fileName, "r");
+    if (!inputFile) {
+        fprintf(stderr, "Error opening file: %s\n", fileName);
+        exit(1);
+    }
 
+    char line[256];
+    while (fgets(line, sizeof(line), inputFile)) {
+        printf("%s", line);
+    }
 
-
-
+    fclose(inputFile);
 }
