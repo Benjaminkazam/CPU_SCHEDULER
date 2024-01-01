@@ -17,14 +17,16 @@ struct Job* readInputFromFile(const char* fileName);
 
 //this function is implemented for First come, First served;
 void fcomeFserved(struct Job* jobs, const char* fileName);
-//function to display average waiting time
+//function to display implement Round-Robin SCheduling
+void roundRobinScheduling (struct Job* jobs, int timeQuantum, const char *fileName);
 //void displayAverageWaitingTime(struct Job* jobs, char schedulingMethod);
 //function to display the scheduling results
 void displayResults(const char* fileName);
+
 int main (int argc, char *argv[]){
     // i wanna check if the correct command line is provide
     if (argc!=5){
-        fprintf(stderr, "You must use this format for running the code : %s -f input.txt -o output.txt\n", argv[0]);
+        fprintf(stderr,"use this format for running the code : %s -f input.txt -o output.txt\n", argv[0]);
         return 1;
     }
     // to take all the command line arguments
@@ -78,7 +80,10 @@ int main (int argc, char *argv[]){
               break;
              case 4: //function
               break;
-             case 5: //fifth function
+             case 5: int quantumValue;
+                        cout<<"\n enter the quantum value";
+                        cin>> quantumValue;
+                        roundRobinScheduling(jobs,quantumValue,outputFile);       
              break;
              default:
                 cout<<"please make a good choice";
@@ -96,7 +101,6 @@ int main (int argc, char *argv[]){
             break; 
         }
  }
-
     // Free allocated memory for jobs
 
     while(jobs!=NULL){
@@ -192,6 +196,92 @@ void fcomeFserved(struct Job* jobs, const char* fileName){
         cout<<"No process for calculation of average time";
     }
     fclose(outputFile);
+
+}
+//function to implement Round-Robin scheduling 
+void roundRobinScheduling (struct Job* jobs, int timeQuantum, const char *fileName){
+    FILE *outputFile = fopen(fileName, "a");
+    if (!outputFile)
+    {
+        fprintf(stderr, "Error opening output file: %s\n", fileName);
+        return;
+    }
+
+    // Initialize variables for total waiting time and current time
+    int totalWaitingTime = 0;
+    int currentTime = 0;
+    int i = 0;
+
+    fprintf(outputFile, "Scheduling Method: Round Robin Scheduling – time_quantum=%d\n", timeQuantum);
+    fprintf(outputFile, "Process Waiting Times:\n");
+
+    // Traverse the linked list to process jobs in Round Robin order
+    struct Job *currentJob = jobs;
+    while (currentJob != NULL)
+    {
+        i++;
+
+        // Calculate waiting time for the current process
+        int waitingTime = currentTime - currentJob->arrivalTime;
+        if (waitingTime < 0)
+        {
+            waitingTime = 0; // Ensure waiting time is non-negative
+        }
+
+        // Update total waiting time
+        totalWaitingTime += waitingTime;
+
+        // Write process information to the output file
+        fprintf(outputFile, "P%d: %d ms\n", i, waitingTime);
+
+        // Update current time to the completion time of the current process
+        if (currentJob->bursTime > timeQuantum)
+        {
+            currentTime += timeQuantum;
+            currentJob->bursTime -= timeQuantum;
+            // Move the current job to the end of the queue
+            struct Job *temp = currentJob;
+            currentJob = currentJob->next;
+            temp->next = NULL;
+            // Append the job to the end of the linked list
+            struct Job *tempJob = jobs;
+            while (tempJob->next != NULL)
+            {
+                tempJob = tempJob->next;
+            }
+            tempJob->next = temp;
+        }
+        else
+        {
+            currentTime += currentJob->bursTime;
+            currentJob->bursTime = 0; // Process completed
+            // Move to the next job
+            currentJob = currentJob->next;
+        }
+    }
+
+    // Calculate and write average waiting time to the output file
+    int numberOfProcesses = 0;
+    struct Job *tempJob = jobs;
+    while (tempJob != NULL)
+    {
+        numberOfProcesses++;
+        tempJob = tempJob->next;
+    }
+
+    // Avoid division by zero
+    if (numberOfProcesses > 0)
+    {
+        float averageWaitingTime = (float)totalWaitingTime / numberOfProcesses;
+        fprintf(outputFile, "Average Waiting Time: %.1f ms\n", averageWaitingTime);
+    }
+    else
+    {
+        fprintf(outputFile, "No processes to calculate average waiting time.\n");
+    }
+
+    fclose(outputFile);
+
 
 }
  

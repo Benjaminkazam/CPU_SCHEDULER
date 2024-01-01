@@ -5,3 +5,12 @@ P3: 8 ms
 P4: 10 ms
 P5: 13 ms
 Average waiting Time: 7.0 ms
+Scheduling Method: Round Robin Scheduling – time_quantum=12
+Process Waiting Times:
+P1: 0 ms
+P2: 4 ms
+P3: 8 ms
+P4: 10 ms
+P5: 13 ms
+Average Waiting Time: 7.0 ms
+
