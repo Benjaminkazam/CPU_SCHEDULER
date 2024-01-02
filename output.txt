@@ -6,3 +6,11 @@ P3: 8 ms
 P4: 10 ms
 P5: 13 ms
 Average waiting time: 7.0 ms
+Round Robin SCheduling - time_quantum = 2
+Process waiting time: 
+P1: 14 ms
+P2: 9 ms
+P3: 11 ms
+P4: 11 ms
+P5: 12 ms
+Average waiting time: 11.0 ms

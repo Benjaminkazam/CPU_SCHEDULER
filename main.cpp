@@ -162,6 +162,42 @@ void fcomeFserved(struct Job* jobs, const char* fileName, const char* outputFile
 }
 //function to implement Round-Robin scheduling 
 void roundRobinScheduling (struct Job* jobs, int timeQuantum, const char *fileName, const char* outputFile){
+    int n= readInputFromFile(jobs, fileName);
+    int i=0, total= 0,x, counter =0, waitingTime[n]={0}, temp[n];
+    x=n;
+    for(i=0; i<n; i++){
+        temp[i]= jobs[i].bursTime;
+     }
+    for (total = 0, i=0;x!=0;)
+     {
+        if(temp[i]<= timeQuantum && temp[i]>0){
+            total+= temp[i];
+            temp[i]=0;
+            counter = 1;
+        } 
+        else if(temp[i]>0){
+            temp[i]= temp [i]- timeQuantum;
+            total+= timeQuantum;
+        }    
+        if (temp[i]==0 && counter ==1){
+            x--;
+            waitingTime[i]= waitingTime[i]+total -jobs[i].arrivalTime- jobs[i].bursTime;
+            counter=0;
+        }
+        if (i==n-1){
+            i=0;
+        }
+        else if (jobs[i+1].arrivalTime<=total)
+        {
+            i++;
+        }
+        else{
+            i=0;
+        }
+        
+     }
+     cout<<"Round Robin SCheduling - time_quantum = "<<timeQuantum<<"\nProcess waiting time: \n";
+     displayAndCalculateAvg(outputFile, "Round Robin SCheduling - time_quantum = 2\nProcess waiting time: \n", waitingTime,n); 
 }
 //function to count line into input file
 int countLines(const char* fileName){
