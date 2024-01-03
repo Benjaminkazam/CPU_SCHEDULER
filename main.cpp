@@ -26,7 +26,8 @@ void displayResults(const char* fileName);
 int countLines(const char* fileName);
 //function to implement shortest job first preemptive
 void sJFPreemptive(struct Job* jobs,const char *fileName, const char *outputFile);
-
+// this function is to implement
+void sJFNonPreemptive(struct Job* jobs, const char* fileName, const char *outputFile);
 int main (int argc, char *argv[]){
     // i wanna check if the correct command line is provide
     if (argc!=5){
@@ -299,4 +300,7 @@ void sJFPreemptive(struct Job* jobs,const char *fileName, const char *outputFile
     }
     cout<<"Scheduling method: shortest job First -preemptive\nProcess waiting time: \n";
     displayAndCalculateAvg(outputFile, "Scheduling method: shortest job First -preemptive\nProcess waiting time: \n", waitingTime,n);
+}
+void sJFNonPreemptive(struct Job* jobs, const char* fileName, const char *outputFile){
+    
 }
