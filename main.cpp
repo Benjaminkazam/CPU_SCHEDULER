@@ -14,7 +14,6 @@ struct Job{
 };
 //this function is for read data from the text file
 int readInputFromFile(struct Job* jobs,const char* fileName);
-
 //this function is implemented for First come, First served;
 void fcomeFserved(struct Job* jobs, const char* fileName, const char* outputFile);
 //function to display implement Round-Robin SCheduling
@@ -23,7 +22,10 @@ void roundRobinScheduling (struct Job* jobs, int timeQuantum, const char *fileNa
 void displayAndCalculateAvg(const char* fileName, const char* methode,int waitingTime[],int n);
 //function to display the scheduling results
 void displayResults(const char* fileName);
+//function to count lines into input file
 int countLines(const char* fileName);
+//function to implement shortest job first preemptive
+void sJFPreemptive(struct Job* jobs,const char *fileName, const char *outputFile);
 
 int main (int argc, char *argv[]){
     // i wanna check if the correct command line is provide
@@ -50,7 +52,7 @@ int main (int argc, char *argv[]){
     string preemptive ="off";
     string methodScheduling= "None";
 
-    // logic of the cpu scheduler(MENU PART)
+    // logic of the cpu scheduler (MENU PART)
  while(true){
     int selectionOption;
     cout<<" CPU SCHEDULER SIMULATOR \n";
@@ -83,7 +85,13 @@ int main (int argc, char *argv[]){
              case 2: fcomeFserved(jobs,inputFile,outputFile);
              methodScheduling="First come, first  served";//Implement first come , first served function
              break;
-             case 3: //third function
+             case 3: if(preemptive=="On"){
+                sJFPreemptive(jobs,inputFile,outputFile);//implement shortest job first preemptive
+                methodScheduling="shortest Job First Preemptive";
+             }
+             else{
+                 methodScheduling="shortest Job First No-Preemptive";
+                }
               break;
              case 4: //function
               break;
@@ -104,11 +112,11 @@ int main (int argc, char *argv[]){
                     cout<<"the preemptive mode is on";
                 }
                 else{
-                    preemptive= "off";
+                    preemptive== "off";
                     cout<< "the preemptive mode is off";
                 }
             break;
-            case 3: displayResults(outputFile);//Show Res
+            case 3: displayResults(outputFile);//Show Result
             break;
             case 4:
             cout<<" All of Scheduling Resultts: \n";
@@ -254,4 +262,41 @@ void displayAndCalculateAvg(const char* fileName, const char* methode,int waitin
     fprintf(output, "Average waiting time: %.1f ms\n", average);
 
     fclose(output);
+}
+void sJFPreemptive(struct Job* jobs,const char *fileName, const char *outputFile){
+    int n= readInputFromFile(jobs, fileName);
+    int currentT=0, completedJobs=0, waitingTime[n], remainingTime[n];
+
+    for(int i =0; i<n; i++){
+        remainingTime[i]= jobs[i].bursTime;
+        waitingTime[i]=0; //rendre cela a zero dans l'array
+    }
+    while(completedJobs<n){
+        int sJobIndex = -1, sTime= INT_MAX;
+        for (int i=0; i<n; i++){
+            if(jobs[i].arrivalTime<= currentT && remainingTime[i]< sTime && remainingTime[i]>0){
+                sJobIndex=i;
+                sTime= remainingTime[i];
+            }
+        }
+        if (sJobIndex==-1){
+            currentT++;
+            continue;
+        }
+        for (int i= 0; i<n; i++){
+            if(i!= sJobIndex && jobs[i].arrivalTime<= currentT&& remainingTime[i]>0){
+                waitingTime[i]++;
+            }
+        }
+        remainingTime[sJobIndex]--;
+        if(remainingTime[sJobIndex]==0){
+            completedJobs++;
+            currentT++;
+        }
+        else{
+            currentT++;
+        }
+    }
+    cout<<"Scheduling method: shortest job First -preemptive\nProcess waiting time: \n";
+    displayAndCalculateAvg(outputFile, "Scheduling method: shortest job First -preemptive\nProcess waiting time: \n", waitingTime,n);
 }
