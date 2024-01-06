@@ -98,8 +98,9 @@ int main (int argc, char *argv[]){
               break;
              case 4: if (preemptive=="On"){
                 prioritySchedulingPreemptive(jobs, inputFile,outputFile);
-                methodScheduling= "Priority scheduling Preemptive";
-                
+                methodScheduling= "Priority scheduling Preemptive";  
+             }else {
+                methodScheduling= "Priority scheduling NonPreemptive";
              }
               break;
              case 5: int quantumValue;
@@ -315,8 +316,7 @@ void prioritySchedulingPreemptive(Job jobs[], const char* fileName, const char *
     int currentT=0, completedJob= 0, waitingT[n]= {0}, remainingT[n];
     for (int i= 0; i<n;i++)
     remainingT[i]= jobs[i].bursTime;
-
-    while (completedJob<n)
+     while (completedJob<n)
     {
         int hPJobIndex =-1, hPriority= INT_MAX;
         for (int i = 0; i < n; i++)
@@ -342,9 +342,15 @@ void prioritySchedulingPreemptive(Job jobs[], const char* fileName, const char *
             completedJob++;
             currentT;
         }
+        else{
+            currentT++;
+        }
+        
         
     }
     cout<<"Scheduling Method: Priority Scheduling- Preemptive\nProcess waiting time:\n";
     displayAndCalculateAvg(outputFile,"scheduling method: Priority scheduling- preemptive\nProcess waiting times:\n",waitingT,n);
+   
+
         
 }
