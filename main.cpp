@@ -28,6 +28,8 @@ int countLines(const char* fileName);
 void sJFPreemptive(struct Job* jobs,const char *fileName, const char *outputFile);
 // this function is to implement
 void sJFNonPreemptive(struct Job* jobs, const char* fileName, const char *outputFile);
+//function to implement priorirty scheduling
+void prioritySchedulingPreemptive(Job jobs[], const char* fileName, const char *outputFile);
 int main (int argc, char *argv[]){
     // i wanna check if the correct command line is provide
     if (argc!=5){
@@ -94,7 +96,11 @@ int main (int argc, char *argv[]){
                  methodScheduling="shortest Job First No-Preemptive";
                 }
               break;
-             case 4: //function
+             case 4: if (preemptive=="On"){
+                prioritySchedulingPreemptive(jobs, inputFile,outputFile);
+                methodScheduling= "Priority scheduling Preemptive";
+                
+             }
               break;
              case 5: int quantumValue;
                         cout<<"\n enter the quantum value ";
@@ -302,5 +308,5 @@ void sJFPreemptive(struct Job* jobs,const char *fileName, const char *outputFile
     displayAndCalculateAvg(outputFile, "Scheduling method: shortest job First -preemptive\nProcess waiting time: \n", waitingTime,n);
 }
 void sJFNonPreemptive(struct Job* jobs, const char* fileName, const char *outputFile){
-    
+
 }
