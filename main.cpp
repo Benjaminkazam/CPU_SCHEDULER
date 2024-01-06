@@ -310,3 +310,41 @@ void sJFPreemptive(struct Job* jobs,const char *fileName, const char *outputFile
 void sJFNonPreemptive(struct Job* jobs, const char* fileName, const char *outputFile){
 
 }
+void prioritySchedulingPreemptive(Job jobs[], const char* fileName, const char *outputFile){
+    int n= readInputFromFile(jobs,fileName);
+    int currentT=0, completedJob= 0, waitingT[n]= {0}, remainingT[n];
+    for (int i= 0; i<n;i++)
+    remainingT[i]= jobs[i].bursTime;
+
+    while (completedJob<n)
+    {
+        int hPJobIndex =-1, hPriority= INT_MAX;
+        for (int i = 0; i < n; i++)
+        {
+            if(jobs[i].arrivalTime<=currentT && jobs[i].priority<hPriority && remainingT[i]>0){
+                hPJobIndex=i;
+                hPriority= jobs[i].priority;
+            }
+        }
+        if (hPJobIndex==-1){
+            currentT++;
+            continue;
+        }
+        for (int i=0; i<n; i++){
+            if (i != hPJobIndex && jobs[i].arrivalTime<= currentT && remainingT[i] > 0){
+                waitingT[i]++;
+            }
+        }
+
+        remainingT[hPJobIndex]--;
+
+        if(remainingT[hPJobIndex]==0){
+            completedJob++;
+            currentT;
+        }
+        
+    }
+    cout<<"Scheduling Method: Priority Scheduling- Preemptive\nProcess waiting time:\n";
+    displayAndCalculateAvg(outputFile,"scheduling method: Priority scheduling- preemptive\nProcess waiting times:\n",waitingT,n);
+        
+}
