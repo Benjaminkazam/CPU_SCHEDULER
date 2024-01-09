@@ -33,11 +33,10 @@ void prioritySchedulingPreemptive(Job jobs[], const char* fileName, const char *
 int main (int argc, char *argv[]){
     // i wanna check if the correct command line is provide
     if (argc!=5){
-        fprintf(stderr,"use this format for running the code : %s -f input.txt -o output.txt\n", argv[0]);
+        fprintf(stderr,"use this format for running the code: %s -f input.txt -o output.txt\n", argv[0]);
         return 1;
     }
     // to take all the command line arguments
-
     const char* inputFile;
     const char* outputFile;
 
@@ -52,7 +51,7 @@ int main (int argc, char *argv[]){
     int size= countLines(inputFile);
     struct Job jobs[size];
 
-    string preemptive ="off";
+    string preemptive ="Off";
     string methodScheduling= "None";
 
     // logic of the cpu scheduler (MENU PART)
@@ -72,7 +71,7 @@ int main (int argc, char *argv[]){
             int SchedulingOption;
             cout<<" Choose what you want to do: \n";
             cout<<"1. None method Scheduling\n";
-            cout<<"2. First come,First Served Schedulin\n";
+            cout<<"2. First come,First Served Scheduling\n";
             cout<<"3. Shortest Job First Scheduling\n";
             cout<<"4. Priority Scheduling\n";
             cout<<"5. Round Robin Scheduling\n";
@@ -94,6 +93,7 @@ int main (int argc, char *argv[]){
              }
              else{
                  methodScheduling="shortest Job First No-Preemptive";
+                 sJFNonPreemptive(jobs,inputFile,outputFile);
                 }
               break;
              case 4: if (preemptive=="On"){
@@ -115,13 +115,13 @@ int main (int argc, char *argv[]){
             }
             break;
             case 2: //Preemptive Mode
-                if(preemptive== "off"){
+                if(preemptive== "Off"){
                     preemptive= "On";
-                    cout<<"the preemptive mode is on";
+                    cout<<"the preemptive mode is on\n";
                 }
                 else{
-                    preemptive== "off";
-                    cout<< "the preemptive mode is off";
+                    preemptive= "Off";
+                    cout<< "the preemptive mode is Off\n";
                 }
             break;
             case 3: displayResults(outputFile);//Show Result
@@ -261,7 +261,7 @@ void displayAndCalculateAvg(const char* fileName, const char* methode,int waitin
         cout<<"P"<<i +1<< ": "<<waitingTime[i]<< " ms\n";
         fprintf(output, "P%d: %d ms\n", i+1, waitingTime[i]);
     }
-    int totalWaitingTime=0;
+    double totalWaitingTime=0.0;
     for (int i=0; i<n; i++){
         totalWaitingTime+= waitingTime[i];
     }
@@ -309,7 +309,38 @@ void sJFPreemptive(struct Job* jobs,const char *fileName, const char *outputFile
     displayAndCalculateAvg(outputFile, "Scheduling method: shortest job First -preemptive\nProcess waiting time: \n", waitingTime,n);
 }
 void sJFNonPreemptive(struct Job* jobs, const char* fileName, const char *outputFile){
+    int nJob= readInputFromFile(jobs,fileName);
+    int currentT=0;
+    int remainingJ=nJob;
+    int waitingT[nJob]={0};
 
+    while (remainingJ>0 && currentT<=1000)
+    {
+        int minPriority = INT_MAX;
+        int cJobIndex=-1;
+
+        for (int i = 0; i < nJob; i++)
+        {
+            if(jobs[i].arrivalTime<=currentT && jobs[i].arrivalTime != (currentT+10)&& jobs[i].priority<minPriority){
+                minPriority=jobs[i].priority;
+                cJobIndex=i;
+            }
+        }
+        if (cJobIndex==-1)
+        {
+            currentT++;
+        }
+        else {
+            waitingT[cJobIndex]= currentT- jobs[cJobIndex].arrivalTime;
+            currentT+= jobs[cJobIndex].bursTime;
+            jobs[cJobIndex].arrivalTime=currentT + 10;
+            jobs[cJobIndex].priority=INT_MAX;
+            remainingJ--;
+        }
+        
+    }
+    cout<<"Scheduling method: shortest job First -Non preemptive\nProcess waiting time: \n";
+    displayAndCalculateAvg(outputFile, "Scheduling method: shortest job First -Non preemptive\nProcess waiting time: \n", waitingT,nJob);
 }
 void prioritySchedulingPreemptive(Job jobs[], const char* fileName, const char *outputFile){
     int n= readInputFromFile(jobs,fileName);
@@ -351,6 +382,5 @@ void prioritySchedulingPreemptive(Job jobs[], const char* fileName, const char *
     cout<<"Scheduling Method: Priority Scheduling- Preemptive\nProcess waiting time:\n";
     displayAndCalculateAvg(outputFile,"scheduling method: Priority scheduling- preemptive\nProcess waiting times:\n",waitingT,n);
    
-
         
 }
