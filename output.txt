@@ -94,3 +94,35 @@ P3: 4 ms
 P4: 13 ms
 P5: 5 ms
 Average waiting time: 6.4 ms
+Scheduling method: priority scheduling-Non preemptive
+Process waiting time: 
+P1: 0 ms
+P2: 10 ms
+P3: 4 ms
+P4: 13 ms
+P5: 5 ms
+Average waiting time: 6.4 ms
+Scheduling Method: First come, First served
+ Process waiting time: 
+P1: 0 ms
+P2: 4 ms
+P3: 8 ms
+P4: 10 ms
+P5: 13 ms
+Average waiting time: 7.0 ms
+Scheduling method: shortest job First -Non preemptive
+Process waiting time: 
+P1: 0 ms
+P2: 10 ms
+P3: 4 ms
+P4: 13 ms
+P5: 5 ms
+Average waiting time: 6.4 ms
+Round Robin SCheduling - time_quantum = 2
+Process waiting time: 
+P1: 14 ms
+P2: 9 ms
+P3: 11 ms
+P4: 11 ms
+P5: 12 ms
+Average waiting time: 11.4 ms
