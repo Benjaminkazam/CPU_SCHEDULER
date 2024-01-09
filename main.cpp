@@ -30,6 +30,8 @@ void sJFPreemptive(struct Job* jobs,const char *fileName, const char *outputFile
 void sJFNonPreemptive(struct Job* jobs, const char* fileName, const char *outputFile);
 //function to implement priorirty scheduling
 void prioritySchedulingPreemptive(Job jobs[], const char* fileName, const char *outputFile);
+//function to implement priority scheduling Non Preemptive
+void prioritySchedulingNonPreemptive(Job jobs[], const char* fileName, const char *outputFile);
 int main (int argc, char *argv[]){
     // i wanna check if the correct command line is provide
     if (argc!=5){
@@ -101,6 +103,7 @@ int main (int argc, char *argv[]){
                 methodScheduling= "Priority scheduling Preemptive";  
              }else {
                 methodScheduling= "Priority scheduling NonPreemptive";
+                prioritySchedulingNonPreemptive(jobs, inputFile,outputFile);
              }
               break;
              case 5: int quantumValue;
@@ -381,6 +384,41 @@ void prioritySchedulingPreemptive(Job jobs[], const char* fileName, const char *
     }
     cout<<"Scheduling Method: Priority Scheduling- Preemptive\nProcess waiting time:\n";
     displayAndCalculateAvg(outputFile,"scheduling method: Priority scheduling- preemptive\nProcess waiting times:\n",waitingT,n);
-   
         
+}
+
+void prioritySchedulingNonPreemptive(Job jobs[], const char* fileName, const char *outputFile){
+
+    int nJob= readInputFromFile(jobs,fileName);
+    int currentT=0;
+    int remainingJ=nJob;
+    int waitingT[nJob]={0};
+
+    while (remainingJ>0 && currentT<=1000)
+    {
+        int minPriority = INT_MAX;
+        int cJobIndex=-1;
+
+        for (int i = 0; i < nJob; i++)
+        {
+            if(jobs[i].arrivalTime<=currentT && jobs[i].arrivalTime != (currentT+10)&& jobs[i].priority<minPriority){
+                minPriority=jobs[i].priority;
+                cJobIndex=i;
+            }
+        }
+        if (cJobIndex==-1)
+        {
+            currentT++;
+        }
+        else {
+            waitingT[cJobIndex]= currentT- jobs[cJobIndex].arrivalTime;
+            currentT+= jobs[cJobIndex].bursTime;
+            jobs[cJobIndex].arrivalTime=currentT + 10;
+            jobs[cJobIndex].priority=INT_MAX;
+            remainingJ--;
+        }
+        
+    }
+    cout<<"Scheduling method: priority scheduling-Non preemptive\nProcess waiting time: \n";
+    displayAndCalculateAvg(outputFile, "Scheduling method: priority scheduling-Non preemptive\nProcess waiting time: \n", waitingT,nJob);
 }
